@@ -12,26 +12,32 @@ class Hand
     Hand(Board *board) : board(board)
     {
     }
+    // Метод для получения выбранной клетки и обработки событий
     tuple<Response, POS_T, POS_T> get_cell() const
     {
-        SDL_Event windowEvent;
+        SDL_Event windowEvent; // Структура для хранения событий SDL
         Response resp = Response::OK;
-        int x = -1, y = -1;
-        int xc = -1, yc = -1;
+        int x = -1, y = -1; // Координаты курсора мыши
+        int xc = -1, yc = -1; // Координаты клетки на доске
+        
         while (true)
         {
             if (SDL_PollEvent(&windowEvent))
             {
                 switch (windowEvent.type)
                 {
+                // Обработка выхода
                 case SDL_QUIT:
                     resp = Response::QUIT;
                     break;
+                // Вычисляются координаты клетки на доске
                 case SDL_MOUSEBUTTONDOWN:
                     x = windowEvent.motion.x;
                     y = windowEvent.motion.y;
                     xc = int(y / (board->H / 10) - 1);
-                    yc = int(x / (board->W / 10) - 1);
+                    yc = int(x / (board->W / 10) - 1);  
+
+                    // Обработка специальных кнопок 
                     if (xc == -1 && yc == -1 && board->history_mtx.size() > 1)
                     {
                         resp = Response::BACK;
@@ -50,10 +56,11 @@ class Hand
                         yc = -1;
                     }
                     break;
+                // Обработка изменения размера окна
                 case SDL_WINDOWEVENT:
                     if (windowEvent.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
                     {
-                        board->reset_window_size();
+                        board->reset_window_size(); // Перерисовываем доску с новым размером
                         break;
                     }
                 }
@@ -63,7 +70,7 @@ class Hand
         }
         return {resp, xc, yc};
     }
-
+    // Метод ожидает действий пользователя
     Response wait() const
     {
         SDL_Event windowEvent;
@@ -98,5 +105,5 @@ class Hand
     }
 
   private:
-    Board *board;
+    Board *board; // Указатель на объект доски
 };

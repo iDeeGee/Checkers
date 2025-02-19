@@ -1,19 +1,34 @@
 {
-    "WindowSize": {
-        "Width": 0,
-        "Hight": 0
-    },
-    "Bot": {
-        "IsWhiteBot": false,
-        "IsBlackBot": true,
-        "WhiteBotLevel": 0,
-        "BlackBotLevel": 5,
-        "BotScoringType": "NumberAndPotential",
-        "BotDelayMS": 0,
-        "NoRandom": false,
-        "Optimization": "O1"
-    },
-    "Game": {
-        "MaxNumTurns": 120
-    }
+
+  "WindowSize": {
+    "_comment.WindowSize": "Размер окна при запуске программы.",
+    "_comment.Width": "Изначальная ширина окна при старте. 0 - fullscreen",
+    "Width": 0,
+    "_comment.Hight": "Изначальная высота окна при старте. 0 - fullscreen",
+    "Hight": 0
+  },
+  "Bot": {
+    "_comment.Bot": "Настройка бота",
+    "_comment.IsWhiteBot": "Кто играет за белые фигуры. Значения: true - бот; fasle - игрок",
+    "IsWhiteBot": false,
+    "_comment.IsBlackBot": "Кто играет за черные фигуры. Значения: true - бот; fasle - игрок",
+    "IsBlackBot": true,
+    "_comment.WhiteBotLevel": "Уровень просчёта белого бота. Значения:0-2—легко; 3-5—средне; 6-12—сложно.Уровни 6+ могут быть медленными без \"Оптимизации\".",
+    "WhiteBotLevel": 0,
+    "_comment.BlackBotLevel": "Уровень просчёта черного бота.Значения:0-2—легко; 3-5—средне; 6-12—сложно.Уровни 6+ могут быть медленными без \"Оптимизации\".",
+    "BlackBotLevel": 5,
+    "_comment.BotScoringType": "Настройка оценки состояния (выгодного) хода бота.Значения: NumberOnly - учитывается только кол-во фигур, NumberAndPotential - кол-во фигур и их позиции",
+    "BotScoringType": "NumberAndPotential",
+    "_comment.BotDelayMS": "Минимальная задержка на ход бота. Значения: целое число (мс)",
+    "BotDelayMS": 0,
+    "_comment.NoRandom": "Добаляет случайные ходы к оптимальным Значения: true, false",
+    "NoRandom": false,
+    "_comment.Optimization": "Насколько быстро бот будет выполнять (просчитывать) ходы. Значения: O0, O1, O2",
+    "Optimization": "O1"
+  },
+
+  "Game": {
+    "_comment.MaxNumTurns": "Максимальное количество ходов на партию, после которых будет 'Ничья'",
+    "MaxNumTurns": 120
+  }
 }
