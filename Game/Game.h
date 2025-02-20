@@ -20,10 +20,10 @@ class Game
     // to start checkers
     int play()
     {
-        // Замер времени игры
+        // Р—Р°РјРµСЂ РІСЂРµРјРµРЅРё РёРіСЂС‹
         auto start = chrono::steady_clock::now();
 
-        // Проверка повтор или новая игра
+        // РџСЂРѕРІРµСЂРєР° РїРѕРІС‚РѕСЂ РёР»Рё РЅРѕРІР°СЏ РёРіСЂР°
         if (is_replay)
         {
             logic = Logic(&board, &config);
@@ -36,23 +36,23 @@ class Game
         }
         is_replay = false;
 
-        // Инициализация переменных
+        // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РїРµСЂРµРјРµРЅРЅС‹С…
         int turn_num = -1;
         bool is_quit = false;
         const int Max_turns = config("Game", "MaxNumTurns");
 
-        // Основной игровой цикл
+        // РћСЃРЅРѕРІРЅРѕР№ РёРіСЂРѕРІРѕР№ С†РёРєР»
         while (++turn_num < Max_turns)
         {
             beat_series = 0;
             logic.find_turns(turn_num % 2);
             if (logic.turns.empty())
                 break;
-            // Считывание настроек 
+            // РЎС‡РёС‚С‹РІР°РЅРёРµ РЅР°СЃС‚СЂРѕРµРє 
             logic.Max_depth = config("Bot", string((turn_num % 2) ? "Black" : "White") + string("BotLevel"));
             if (!config("Bot", string("Is") + string((turn_num % 2) ? "Black" : "White") + string("Bot")))
             {
-                // Обработка хода (действий) пользователя и бота.
+                // РћР±СЂР°Р±РѕС‚РєР° С…РѕРґР° (РґРµР№СЃС‚РІРёР№) РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ Рё Р±РѕС‚Р°.
                 auto resp = player_turn(turn_num % 2);
                 if (resp == Response::QUIT)
                 {
@@ -66,7 +66,7 @@ class Game
                 }
                 else if (resp == Response::BACK)
                 {
-                    // Проверка отмены хода
+                    // РџСЂРѕРІРµСЂРєР° РѕС‚РјРµРЅС‹ С…РѕРґР°
                     if (config("Bot", string("Is") + string((1 - turn_num % 2) ? "Black" : "White") + string("Bot")) &&
                         !beat_series && board.history_mtx.size() > 2)
                     {
@@ -84,9 +84,9 @@ class Game
             else
                 bot_turn(turn_num % 2);
         }
-        // Время окончания игры
+        // Р’СЂРµРјСЏ РѕРєРѕРЅС‡Р°РЅРёСЏ РёРіСЂС‹
         auto end = chrono::steady_clock::now();
-        // Запись в log.txt время игры. 
+        // Р—Р°РїРёСЃСЊ РІ log.txt РІСЂРµРјСЏ РёРіСЂС‹. 
         ofstream fout(project_path + "log.txt", ios_base::app);
         fout << "Game time: " << (int)chrono::duration<double, milli>(end - start).count() << " millisec\n";
         fout.close();
@@ -95,7 +95,7 @@ class Game
             return play();
         if (is_quit)
             return 0;
-        // Определение результатов игры и ожидание действий пользователя.
+        // РћРїСЂРµРґРµР»РµРЅРёРµ СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ РёРіСЂС‹ Рё РѕР¶РёРґР°РЅРёРµ РґРµР№СЃС‚РІРёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
         int res = 2;
         if (turn_num == Max_turns)
         {
@@ -116,37 +116,37 @@ class Game
     }
 
   private:
-    // Функция для выполнения хода бота
+    // Р¤СѓРЅРєС†РёСЏ РґР»СЏ РІС‹РїРѕР»РЅРµРЅРёСЏ С…РѕРґР° Р±РѕС‚Р°
     void bot_turn(const bool color)
     {
-        auto start = chrono::steady_clock::now(); // Засекаем время начала хода
+        auto start = chrono::steady_clock::now(); // Р—Р°СЃРµРєР°РµРј РІСЂРµРјСЏ РЅР°С‡Р°Р»Р° С…РѕРґР°
 
-        auto delay_ms = config("Bot", "BotDelayMS"); // Задержка для имитации "раздумий" бота
+        auto delay_ms = config("Bot", "BotDelayMS"); // Р—Р°РґРµСЂР¶РєР° РґР»СЏ РёРјРёС‚Р°С†РёРё "СЂР°Р·РґСѓРјРёР№" Р±РѕС‚Р°
 
-        // Создаем отдельный поток для задержки, чтобы не блокировать основной поток
+        // РЎРѕР·РґР°РµРј РѕС‚РґРµР»СЊРЅС‹Р№ РїРѕС‚РѕРє РґР»СЏ Р·Р°РґРµСЂР¶РєРё, С‡С‚РѕР±С‹ РЅРµ Р±Р»РѕРєРёСЂРѕРІР°С‚СЊ РѕСЃРЅРѕРІРЅРѕР№ РїРѕС‚РѕРє
         thread th(SDL_Delay, delay_ms);
 
-        // Поиск лучшего хода для бота
+        // РџРѕРёСЃРє Р»СѓС‡С€РµРіРѕ С…РѕРґР° РґР»СЏ Р±РѕС‚Р°
         auto turns = logic.find_best_turns(color);
-        th.join(); // Ожидаем завершения потока с задержкой
+        th.join(); // РћР¶РёРґР°РµРј Р·Р°РІРµСЂС€РµРЅРёСЏ РїРѕС‚РѕРєР° СЃ Р·Р°РґРµСЂР¶РєРѕР№
 
         bool is_first = true;
 
-        // Выполнение ходов
+        // Р’С‹РїРѕР»РЅРµРЅРёРµ С…РѕРґРѕРІ
         for (auto turn : turns)
         {
             if (!is_first)
             {
-                SDL_Delay(delay_ms); // Задержка между ходами в серии
+                SDL_Delay(delay_ms); // Р—Р°РґРµСЂР¶РєР° РјРµР¶РґСѓ С…РѕРґР°РјРё РІ СЃРµСЂРёРё
             }
             is_first = false;
-            beat_series += (turn.xb != -1); // Увеличиваем счетчик серии взятий, если был взят фигуру
-            board.move_piece(turn, beat_series); // Выполняем ход на доске
+            beat_series += (turn.xb != -1); // РЈРІРµР»РёС‡РёРІР°РµРј СЃС‡РµС‚С‡РёРє СЃРµСЂРёРё РІР·СЏС‚РёР№, РµСЃР»Рё Р±С‹Р» РІР·СЏС‚ С„РёРіСѓСЂСѓ
+            board.move_piece(turn, beat_series); // Р’С‹РїРѕР»РЅСЏРµРј С…РѕРґ РЅР° РґРѕСЃРєРµ
         }
 
-        auto end = chrono::steady_clock::now(); // Засекаем время окончания хода
+        auto end = chrono::steady_clock::now(); // Р—Р°СЃРµРєР°РµРј РІСЂРµРјСЏ РѕРєРѕРЅС‡Р°РЅРёСЏ С…РѕРґР°
 
-        // Логируем время выполнения хода
+        // Р›РѕРіРёСЂСѓРµРј РІСЂРµРјСЏ РІС‹РїРѕР»РЅРµРЅРёСЏ С…РѕРґР°
         ofstream fout(project_path + "log.txt", ios_base::app);
         fout << "Bot turn time: " << (int)chrono::duration<double, milli>(end - start).count() << " millisec\n";
         fout.close();
@@ -154,7 +154,7 @@ class Game
 
     Response player_turn(const bool color)
     {
-        // Подсветка доступных для хода клеток
+        // РџРѕРґСЃРІРµС‚РєР° РґРѕСЃС‚СѓРїРЅС‹С… РґР»СЏ С…РѕРґР° РєР»РµС‚РѕРє
         vector<pair<POS_T, POS_T>> cells;
         for (auto turn : logic.turns)
         {
@@ -163,7 +163,7 @@ class Game
         board.highlight_cells(cells);
         move_pos pos = {-1, -1, -1, -1};
         POS_T x = -1, y = -1;
-        // Обработка выбора клетки 
+        // РћР±СЂР°Р±РѕС‚РєР° РІС‹Р±РѕСЂР° РєР»РµС‚РєРё 
         while (true)
         {
             auto resp = hand.get_cell();
@@ -171,7 +171,7 @@ class Game
                 return get<0>(resp);
             pair<POS_T, POS_T> cell{get<1>(resp), get<2>(resp)};
 
-            // Проверка на корректность выбора клетки
+            // РџСЂРѕРІРµСЂРєР° РЅР° РєРѕСЂСЂРµРєС‚РЅРѕСЃС‚СЊ РІС‹Р±РѕСЂР° РєР»РµС‚РєРё
             bool is_correct = false;
             for (auto turn : logic.turns)
             {
@@ -187,7 +187,7 @@ class Game
                 }
             }
 
-            // Обработка некорректного выбора клетки
+            // РћР±СЂР°Р±РѕС‚РєР° РЅРµРєРѕСЂСЂРµРєС‚РЅРѕРіРѕ РІС‹Р±РѕСЂР° РєР»РµС‚РєРё
             if (pos.x != -1)
                 break;
             if (!is_correct)
@@ -217,13 +217,13 @@ class Game
             board.highlight_cells(cells2);
         }
 
-        // Выполнение хода 
+        // Р’С‹РїРѕР»РЅРµРЅРёРµ С…РѕРґР° 
         board.clear_highlight();
         board.clear_active();
         board.move_piece(pos, pos.xb != -1);
         if (pos.xb == -1)
             return Response::OK;
-        // Продолжить серию взятий.  
+        // РџСЂРѕРґРѕР»Р¶РёС‚СЊ СЃРµСЂРёСЋ РІР·СЏС‚РёР№.  
         beat_series = 1;
         
         while (true)
@@ -239,7 +239,7 @@ class Game
             }
             board.highlight_cells(cells);
             board.set_active(pos.x2, pos.y2);
-            // Обработка продолжения взятий
+            // РћР±СЂР°Р±РѕС‚РєР° РїСЂРѕРґРѕР»Р¶РµРЅРёСЏ РІР·СЏС‚РёР№
             while (true)
             {
                 auto resp = hand.get_cell();
@@ -267,7 +267,7 @@ class Game
                 break;
             }
         }
-        // возврат результата
+        // РІРѕР·РІСЂР°С‚ СЂРµР·СѓР»СЊС‚Р°С‚Р°
         return Response::OK;
     }
     

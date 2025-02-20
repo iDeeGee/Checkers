@@ -13,14 +13,14 @@ class Config
         reload();
     }
 
-    // Загружает настройки из файла settings.json и сохраняет в объект config.
+    // Р—Р°РіСЂСѓР¶Р°РµС‚ РЅР°СЃС‚СЂРѕР№РєРё РёР· С„Р°Р№Р»Р° settings.json Рё СЃРѕС…СЂР°РЅСЏРµС‚ РІ РѕР±СЉРµРєС‚ config.
     void reload()
     {
         std::ifstream fin(project_path + "settings.json");
         fin >> config;
         fin.close();
     }
-    // Позволяет удобно получать значения из config по указанным ключам. Пример config("Game", "MaxNumTurns").
+    // РџРѕР·РІРѕР»СЏРµС‚ СѓРґРѕР±РЅРѕ РїРѕР»СѓС‡Р°С‚СЊ Р·РЅР°С‡РµРЅРёСЏ РёР· config РїРѕ СѓРєР°Р·Р°РЅРЅС‹Рј РєР»СЋС‡Р°Рј. РџСЂРёРјРµСЂ config("Game", "MaxNumTurns").
     auto operator()(const string &setting_dir, const string &setting_name) const
     {
         return config[setting_dir][setting_name];

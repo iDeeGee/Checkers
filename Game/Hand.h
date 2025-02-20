@@ -12,13 +12,13 @@ class Hand
     Hand(Board *board) : board(board)
     {
     }
-    // Метод для получения выбранной клетки и обработки событий
+    // РњРµС‚РѕРґ РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РІС‹Р±СЂР°РЅРЅРѕР№ РєР»РµС‚РєРё Рё РѕР±СЂР°Р±РѕС‚РєРё СЃРѕР±С‹С‚РёР№
     tuple<Response, POS_T, POS_T> get_cell() const
     {
-        SDL_Event windowEvent; // Структура для хранения событий SDL
+        SDL_Event windowEvent; // РЎС‚СЂСѓРєС‚СѓСЂР° РґР»СЏ С…СЂР°РЅРµРЅРёСЏ СЃРѕР±С‹С‚РёР№ SDL
         Response resp = Response::OK;
-        int x = -1, y = -1; // Координаты курсора мыши
-        int xc = -1, yc = -1; // Координаты клетки на доске
+        int x = -1, y = -1; // РљРѕРѕСЂРґРёРЅР°С‚С‹ РєСѓСЂСЃРѕСЂР° РјС‹С€Рё
+        int xc = -1, yc = -1; // РљРѕРѕСЂРґРёРЅР°С‚С‹ РєР»РµС‚РєРё РЅР° РґРѕСЃРєРµ
         
         while (true)
         {
@@ -26,18 +26,18 @@ class Hand
             {
                 switch (windowEvent.type)
                 {
-                // Обработка выхода
+                // РћР±СЂР°Р±РѕС‚РєР° РІС‹С…РѕРґР°
                 case SDL_QUIT:
                     resp = Response::QUIT;
                     break;
-                // Вычисляются координаты клетки на доске
+                // Р’С‹С‡РёСЃР»СЏСЋС‚СЃСЏ РєРѕРѕСЂРґРёРЅР°С‚С‹ РєР»РµС‚РєРё РЅР° РґРѕСЃРєРµ
                 case SDL_MOUSEBUTTONDOWN:
                     x = windowEvent.motion.x;
                     y = windowEvent.motion.y;
                     xc = int(y / (board->H / 10) - 1);
                     yc = int(x / (board->W / 10) - 1);  
 
-                    // Обработка специальных кнопок 
+                    // РћР±СЂР°Р±РѕС‚РєР° СЃРїРµС†РёР°Р»СЊРЅС‹С… РєРЅРѕРїРѕРє 
                     if (xc == -1 && yc == -1 && board->history_mtx.size() > 1)
                     {
                         resp = Response::BACK;
@@ -56,11 +56,11 @@ class Hand
                         yc = -1;
                     }
                     break;
-                // Обработка изменения размера окна
+                // РћР±СЂР°Р±РѕС‚РєР° РёР·РјРµРЅРµРЅРёСЏ СЂР°Р·РјРµСЂР° РѕРєРЅР°
                 case SDL_WINDOWEVENT:
                     if (windowEvent.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
                     {
-                        board->reset_window_size(); // Перерисовываем доску с новым размером
+                        board->reset_window_size(); // РџРµСЂРµСЂРёСЃРѕРІС‹РІР°РµРј РґРѕСЃРєСѓ СЃ РЅРѕРІС‹Рј СЂР°Р·РјРµСЂРѕРј
                         break;
                     }
                 }
@@ -70,7 +70,7 @@ class Hand
         }
         return {resp, xc, yc};
     }
-    // Метод ожидает действий пользователя
+    // РњРµС‚РѕРґ РѕР¶РёРґР°РµС‚ РґРµР№СЃС‚РІРёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     Response wait() const
     {
         SDL_Event windowEvent;
@@ -105,5 +105,5 @@ class Hand
     }
 
   private:
-    Board *board; // Указатель на объект доски
+    Board *board; // РЈРєР°Р·Р°С‚РµР»СЊ РЅР° РѕР±СЉРµРєС‚ РґРѕСЃРєРё
 };
