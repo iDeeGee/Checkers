@@ -99,26 +99,27 @@ private:
             find_turns(x, y, mtx);
         }
         
-        auto = now_turns = turns;
+        auto now_turns = turns;
         auto now_have_beats = have_beats;
 
         if (!now_have_beats && state != 0) {
-            find_best_turns_rec(mtx, 1 - color, 0, alpha);
+            return find_best_turns_rec(mtx, 1 - color, 0, alpha);
         }
-        doubele best_score = -1;
-        for (auto turn in turns) {
+        double best_score = -1;
+        for (auto turn : now_turns) {
             size_t new_state = next_move.size();
             double score;
             if (now_have_beats) {
                 find_first_best_turn(make_turn(mtx, turn), color, turn.x2, turn.y2, new_state, best_score);
-            } else {
+            } 
+            else {
                 find_best_turns_rec(make_turn(mtx, turn), 1 - color, 0, best_score);
             }
             // Нашли лучшую оптиму
             if (score > best_score) {
                 best_score = score;
                 next_move[state] = turn;
-                next_best_state[state] = new_state;
+                next_best_state[state] = (now_have_beats ? new_state : -1);
             }
         }
 
@@ -133,7 +134,59 @@ private:
 
     double find_best_turns_rec(vector<vector<POS_T>> mtx, const bool color, const size_t depth, double alpha = -1,
                                double beta = INF + 1, const POS_T x = -1, const POS_T y = -1)
-    {}
+    {
+        if (depth == Max_depth) {
+            return calc_score(mtx, (depth % 2 == color));
+        }
+
+        if (x != -1) {
+            find_turns(x, y, mtx);
+        }
+        else {
+            find_turns(color, mtx);
+        }
+        auto now_turns = turns;
+        auto now_have_beats = have_beats;
+
+        if (!now_have_beats && x != -1) {
+            return find_best_turns_rec(mtx, 1 - color, depth + 1, alpha, beta);
+        }
+
+        if (turns.empty()) {
+            return (depth % 2 ? 0 : INF);
+        }
+
+        double min_score = INF + 1;
+        double max_score = -1;
+        for (auto turn : now_turns) {
+            double score;
+            if (now_have_beats) {
+                score = find_best_turns_rec(make_turn(mtx, turn), color, depth, alpha, beta, turn.x2, turn.y2);
+            }
+            else {
+                score = find_best_turns_rec(make_turn(mtx, turn), 1 - color, depth + 1, alpha, beta);
+            }
+
+            min_score = min(min_score, score);
+            max_score = max(max_score, score);
+            // alpha-beta cutter
+            if (depth % 2) {
+                alpha = max(alpha, max_score);
+            }
+            else {
+                beta = min(beta, min_score);
+            }
+            if (optimization != "O0" && alpha > beta) {
+                break;
+            }
+            if (optimization == "O2" && alpha == beta) {
+                return (depth % 2 ? max_score + 1 : min_score - 1);
+            }
+        }
+        
+        return (depth % 2 ? max_score : min_score);
+        
+    }
 
 public:
     // Поиск всех возможных ходов для фигуры определенного цвета..
