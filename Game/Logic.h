@@ -20,7 +20,23 @@ class Logic
     }
 
     vector<move_pos> find_best_turns(const bool color) // Вектор для хранения возможных ходов
-    {}
+    {
+        next_move.clear();
+        next_best_state.clear();
+
+        find_first_best_turn(board->get_board(), color, -1, -1, 0);
+
+        vector<move_pos> res;
+        int state = 0;
+
+        do {
+            res.push_back(next_move[state]);
+            state = next_best_state[state];
+        } while (state != -1 && next_move[state].x != -1);
+
+        return res;
+        
+    }
 
 private:
     // Функция для выполнения хода на доске (без изменения оригинальной доски)
@@ -76,7 +92,44 @@ private:
 
     double find_first_best_turn(vector<vector<POS_T>> mtx, const bool color, const POS_T x, const POS_T y, size_t state,
                                 double alpha = -1)
-    {}
+    {
+        next_move.emplace_back(-1, -1, -1, -1);
+        next_best_state.push_back(-1);
+        if (state != 0) {
+            find_turns(x, y, mtx);
+        }
+        
+        auto = now_turns = turns;
+        auto now_have_beats = have_beats;
+
+        if (!now_have_beats && state != 0) {
+            find_best_turns_rec(mtx, 1 - color, 0, alpha);
+        }
+        doubele best_score = -1;
+        for (auto turn in turns) {
+            size_t new_state = next_move.size();
+            double score;
+            if (now_have_beats) {
+                find_first_best_turn(make_turn(mtx, turn), color, turn.x2, turn.y2, new_state, best_score);
+            } else {
+                find_best_turns_rec(make_turn(mtx, turn), 1 - color, 0, best_score);
+            }
+            // Нашли лучшую оптиму
+            if (score > best_score) {
+                best_score = score;
+                next_move[state] = turn;
+                next_best_state[state] = new_state;
+            }
+        }
+
+        return best_score;
+        
+        // now_have_beats && state == 0;
+        // !now_have_beats && state == 0;
+        // now_have_beats && state != 0;
+        // !now_have_beats && state != 0;
+
+    }
 
     double find_best_turns_rec(vector<vector<POS_T>> mtx, const bool color, const size_t depth, double alpha = -1,
                                double beta = INF + 1, const POS_T x = -1, const POS_T y = -1)
